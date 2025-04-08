@@ -1,6 +1,28 @@
 # NAT-Enabled-Enterprise-Network-Infrastructure
 
-## Diagram
+### **Technologies Implemented**
+
+- Creating a **network topology** using **Cisco Packet Tracer**.
+- Connecting networking devices with **correct cabling** (copper, console, fiber).
+- Configuring **basic device settings** (hostname, banners, passwords).
+- Creating **VLANs** and assigning ports to appropriate **VLAN numbers**.
+- Performing **subnetting and IP addressing** based on network requirements.
+- Configuring **Inter-VLAN Routing** using **Switch Virtual Interfaces (SVIs)** on multilayer switches.
+- Setting up a **dedicated DHCP server** to provide **dynamic IP allocation** to end devices.
+- Configuring **SSH (Secure Shell)** on network devices for secure **remote access**.
+- Configuring **OSPF (Open Shortest Path First)** as the dynamic **routing protocol**.
+- Enabling **Port Security (Switchport Security)** on switches to control unauthorized access.
+- Configuring a **WLAN (Wireless LAN)** using a **Cisco Access Point** for wireless connectivity.
+- Performing full **host device configurations** (IP address, subnet mask, gateway, DNS).
+- **Configuring NAT (Network Address Translation)** on the router to allow internal devices access to external networks.
+- **Testing and verifying network communication** using tools like `ping`, `tracert`, and checking routing/switching tables.
+
+---
+## VLSM
+
+![Capture](https://github.com/user-attachments/assets/6a75d5b0-c0cc-45aa-b33e-9db060d767de)
+
+## Network Diagram
 
 ![Dxx](https://github.com/user-attachments/assets/b37503ab-6113-4cd4-961c-36b0ec69e50c)
 
