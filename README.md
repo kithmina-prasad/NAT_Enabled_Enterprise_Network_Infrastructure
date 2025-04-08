@@ -1,4 +1,4 @@
-# NAT-Enabled-Enterprise-Network-Infrastructure
+# NAT_Enabled_Enterprise_Network_Infrastructure
 
 ### **Technologies Implemented**
 
