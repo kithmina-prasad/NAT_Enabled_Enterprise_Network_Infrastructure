@@ -1,0 +1,137 @@
+Router>enable
+Router#configure terminal
+Router(config)#hostname BR
+BR(config)#banner  motd *
+
+#################################################
+This is Secure area. Please enter your Authentication.
+#################################################
+
+*
+
+BR(config)#interface GigaBitEthernet0/0/0
+BR(config-if)#description SW-06-link
+BR(config-if)#no ip address
+BR(config-if)#no shutdown
+BR(config-if)#exit
+
+BR(config)#interface GigaBitEthernet0/0/0.2
+BR(config-subif)#encapsulation dot1Q 2
+BR(config-subif)#description Admin-Segment
+BR(config-subif)#ip address 172.16.4.177 255.255.255.240
+BR(config-subif)#ip helper-address 172.16.4.67
+BR(config-subif)#no shutdown
+BR(config-subif)#exit
+
+BR(config)#interface GigaBitEthernet0/0/0.3
+BR(config-subif)#encapsulation dot1Q 3
+BR(config-subif)#description Server-Segment
+BR(config-subif)#ip address 172.16.4.65 255.255.255.224
+BR(config-subif)#ip helper-address 172.16.4.67
+BR(config-subif)#ip helper-address 172.16.4.67
+BR(config-subif)#no shutdown 
+BR(config-subif)#exit
+
+BR(config)#interface GigaBitEthernet0/0/1
+BR(config-if)#description SW-07-Link
+BR(config-if)#ip address 172.16.4.97 255.255.255.224
+BR(config-if)#ip helper-address 172.16.4.67
+BR(config-if)#no shutdown
+BR(config-if)#exit
+
+BR(config)#interface Serial0/2/0
+BR(config-if)#description R-04-Link
+BR(config-if)#ip address 172.16.4.222 255.255.255.252
+BR(config-if)#no shutdown
+BR(config-if)#exit
+
+BR(config)#interface Serial0/2/1
+BR(config-if)#description ISP-Link
+BR(config-if)#ip address 100.100.10.10 255.255.255.252
+BR(config-if)#no shutdown
+BR(config-if)#exit
+
+BR(config)#ip route 0.0.0.0 0.0.0.0 serial0/2/1
+
+BR(config)#enable secret Prasad@2025.1k
+
+BR(config)#line console 0
+BR(config-line)#password pRasad@2025.1k
+BR(config-line)#login
+BR(config-line)#exec-timeout 15 0
+BR(config-line)#exit
+
+BR(config)#ip domain-name sltsc.lk
+BR(config)#crypto key generate rsa general-keys modulus 2048
+BR(config)#username Admin secret PRasad@s$H.1k 
+BR(config)#line vty 0 4
+BR(config-line)#exec-timeout 15 0
+BR(config-line)#transport input ssh
+BR(config-line)#login local
+BR(config-line)#exit
+BR(config)#ip ssh version 2
+
+BR(config)#service password-encryption
+BR(config)#security passwords min-length 8
+BR(config)#login block-for 360 attempts 3 within 60
+
+BR(config)#ntp server 172.16.4.68
+BR(config)#ntp server 172.16.4.68
+BR(config)#ntp trusted-key 2
+BR(config)#ntp authentication-key 2 md5 cisco123
+BR(config)#ntp update-calendar
+
+BR(config)#logging host 172.16.4.69
+BR(config)#logging on
+BR(config)#logging buffered
+BR(config)#logging console
+BR(config)#logging trap
+BR(config)#logging userinfo
+BR(config)#service timestamps log datetime msec
+BR(config)#exit
+
+BR(config)#router ospf 10
+BR(config-router)#router-id 5.5.5.5
+BR(config-router)#network 172.16.4.176 0.0.0.15 area 0
+BR(config-router)#network 172.16.4.64 0.0.0.31 area 0
+BR(config-router)#network 172.16.4.96 0.0.0.31 area 0
+BR(config-router)#network 172.16.4.220 0.0.0.3 area 0
+BR(config-router)#default-information originate
+BR(config-router)#passive-interface GigaBitEthernet0/0/0
+BR(config-router)#passive-interface GigaBitEthernet0/0/1
+BR(config-router)#exit
+
+BR(config)#access-list 101 remark users cannot access server sgement
+BR(config)#access-list 101 deny icmp any 172.16.4.64 0.0.0.31 echo
+BR(config)#access-list 101 permit ip any any
+
+BR(config)#interface GigaBitEthernet0/0/1
+BR(config-if)#ip access-group 101 in
+BR(config-if)#exit
+
+BR(config)#interface GigaBitEthernet0/0/0.2
+BR(config-if)#ip nat inside
+BR(config-if)#exit
+
+BR(config)#interface GigaBitEthernet0/0/0.3
+BR(config-if)#ip nat inside
+BR(config-if)#exit
+
+BR(config)#interface GigaBitEthernet0/0/1
+BR(config-if)#ip nat inside
+BR(config-if)#exit
+
+BR(config)#interface Serial0/2/0
+BR(config-if)#ip nat inside
+BR(config-if)#exit
+
+BR(config)#interface Serial0/2/1
+BR(config-if)#ip nat outside
+BR(config-if)#exit
+
+BR(config)#ip nat pool NATPOOL 123.231.1.3 123.231.1.6 netmask 255.255.255.248
+BR(config)#access-list 1 permit any
+BR(config)#ip nat inside source list 1 pool NATPOOL
+
+BR(config)#copy running-config startup-config
+BR(config)#copy startup-config tftp

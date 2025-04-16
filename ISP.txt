@@ -1,0 +1,25 @@
+Router>enable
+Router#configure terminal
+Router(config)#hostname ISP
+ISP(config)#banner motd *
+
+#################################################
+This is Secure area. Please enter your Authentication.
+#################################################
+
+*
+
+ISP(config)#interface Serial0/2/1
+ISP(config-if)#description BR-Link
+ISP(config-if)#ip address 100.100.10.9 255.255.255.252
+ISP(config-if)#clock rate 64000
+ISP(config-if)#no shutdown
+ISP(config-if)#exit
+
+ISP(config)#interface GigaBitEthernet0/0/0
+ISP(config-if)#description ISP-SW-Link
+ISP(config-if)#ip address 100.100.10.1 255.255.255.248
+ISP(config-if)#no shutdown
+ISP(config-if)#exit
+
+ISP(config)#ip route 123.231.1.0 255.255.255.248 100.100.10.10

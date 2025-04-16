@@ -1,0 +1,85 @@
+Router>enable
+Router#configure terminal
+Router(config)#hostname R-04
+
+R-04(config)#banner motd *
+
+#################################################
+This is Secure area. Please enter your Authentication.
+#################################################
+
+*
+
+R-04(config)#interface Serial0/2/0
+R-04(config-if)#description R-02-Link
+R-04(config-if)#ip address 172.16.4.213 255.255.255.252
+R-04(config-if)#clock rate 64000
+R-04(config-if)#no shutdown
+R-04(config-if)#exit
+
+R-04(config)#interface Serial0/2/1
+R-04(config-if)#description R-07-Link
+R-04(config-if)#ip address 172.16.4.229 255.255.255.252
+R-04(config-if)#clock rate 64000
+R-04(config-if)#no shutdown
+R-04(config-if)#exit
+
+R-04(config)#interface Serial0/1/0
+R-04(config-if)#description BR-Link
+R-04(config-if)#ip address 172.16.4.221 255.255.255.252
+R-04(config-if)#clock rate 64000
+R-04(config-if)#no shutdown
+R-04(config-if)#exit
+
+R-04(config)#interface Serial0/1/1
+R-04(config-if)#description R-06-Link
+R-04(config-if)#ip address 172.16.4.225 255.255.255.252
+R-04(config-if)#no shutdown
+R-04(config-if)#exit
+
+R-04(config)#enable secret Prasad@2025.1k
+
+R-04(config)#line console 0
+R-04(config-line)#password pRasad@2025.1k
+R-04(config-line)#login
+R-04(config-line)#exec-timeout 15 0
+R-04(config-line)#exit
+
+R-04(config)#ip domain-name sltsc.lk
+R-04(config)#crypto key generate rsa general-keys modulus 2048
+R-04(config)#username Admin secret PRasad@s$H.1k 
+R-04(config)#line vty 0 4
+R-04(config-line)#exec-timeout 15 0
+R-04(config-line)#transport input ssh
+R-04(config-line)#login local
+R-04(config-line)#exit
+R-04(config)#ip ssh version 2
+
+R-04(config)#ntp server 172.16.4.68	
+R-04(config)#ntp trusted-key 2
+R-04(config)#ntp authentication-key 2 md5 cisco123
+R-04(config)#ntp update-calendar
+
+R-04(config)#logging host 172.16.4.69
+R-04(config)#logging on
+R-04(config)#logging buffered
+R-04(config)#logging console
+R-04(config)#logging trap
+R-04(config)#logging userinfo
+R-04(config)#service timestamps log datetime msec
+R-04(config)#exit
+
+R-04(config)#service password-encryption
+R-04(config)#security passwords min-length 8
+R-04(config)#login block-for 360 attempts 3 within 60
+
+R-04(config)#router ospf 10
+R-04(config-router)#router-id 4.4.4.4
+R-04(config-router)#network 172.16.4.212 0.0.0.3 area 0
+R-04(config-router)#network 172.16.4.220 0.0.0.3 area 0
+R-04(config-router)#network 172.16.4.224 0.0.0.3 area 0
+R-04(config-router)#network 172.16.4.228 0.0.0.3 area 0
+R-04(config-router)#exit
+
+R-04(config)#copy running-config startup-config
+R-04(config)#copy startup-config tftp

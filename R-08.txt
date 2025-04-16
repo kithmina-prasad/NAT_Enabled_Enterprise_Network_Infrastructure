@@ -1,0 +1,84 @@
+Router>enable
+Router#configure terminal
+Router(config)#hostname R-08
+
+R-08(config)#interface GigaBitEthernet0/0/0
+R-08(config-if)#description SW-12-Link
+R-08(config-if)#ip address 172.16.2.129 255.255.255.128
+R-08(config-if)#ip helper-address 172.16.4.67
+R-08(config-if)#no shutdown
+R-08(config-if)#exit
+
+R-08(config)#interface GigaBitEthernet0/0/1
+R-08(config-if)#description WRT300N-Link
+R-08(config-if)#ip address 172.16.4.193 255.255.255.240
+R-08(config-if)#ip helper-address 172.16.4.67
+R-08(config-if)#no shutdown
+R-08(config-if)#exit
+
+R-08(config)#interface Serial0/2/0
+R-08(config-if)#description R-07-Link
+R-08(config-if)#ip address 172.16.4.234 255.255.255.252
+R-08(config-if)#no shutdown
+R-08(config-if)#exit
+
+R-08(config)#enable secret Prasad@2025.1k
+
+R-08(config)#line console 0
+R-08(config-line)#password pRasad@2025.1k
+R-08(config-line)#login
+R-08(config-line)#exec-timeout 15 0
+R-08(config-line)#exit
+
+R-08(config)#ip domain-name sltsc.lk
+R-08(config)#crypto key generate rsa general-keys modulus 2048
+R-08(config)#username Admin secret PRasad@s$H.1k 
+R-08(config)#line vty 0 4
+R-08(config-line)#exec-timeout 15 0
+R-08(config-line)#transport input ssh
+R-08(config-line)#login local
+R-08(config-line)#exit
+R-08(config)#ip ssh version 2
+
+R-08(config)#service password-encryption
+R-08(config)#security passwords min-length 8
+R-08(config)#login block-for 360 attempts 3 within 60
+
+R-08(config)#ntp server 172.16.4.68
+R-08(config)#ntp server 172.16.4.68
+R-08(config)#ntp trusted-key 2
+R-08(config)#ntp authentication-key 2 md5 cisco123
+R-08(config)#ntp update-calendar
+
+R-08(config)#logging host 172.16.4.69
+R-08(config)#logging on
+R-08(config)#logging buffered
+R-08(config)#logging console
+R-08(config)#logging trap
+R-08(config)#logging userinfo
+R-08(config)#service timestamps log datetime msec
+R-08(config)#exit
+
+R-08(config)#router ospf 10
+R-08(config-router)#router-id 8.8.8.8
+R-08(config-router)#network 172.16.2.128 0.0.0.127 area 0
+R-08(config-router)#network 172.16.4.192 0.0.0.15 area 0
+R-08(config-router)#network 172.16.4.232 0.0.0.3 area 0
+R-08(config-router)#passive-interface GigaBitEthernet0/0/0
+R-08(config-router)#passive-interface GigaBitEthernet0/0/1
+R-08(config-router)#exit
+
+R-08(config)#access-list 101 remark users cannot access server sgement
+R-08(config)#access-list 101 deny icmp any 172.16.4.64 0.0.0.31 echo
+R-08(config)#access-list 101 permit ip any any
+
+R-08(config)#interface GigaBitEthernet0/0/0
+R-08(config-if)#ip access-group 101 in
+R-08(config-if)#exit
+
+R-08(config)#interface GigaBitEthernet0/0/1
+R-08(config-if)#ip access-group 101 in
+R-08(config-if)#exit
+
+R-08(config)#copy running-config startup-config
+R-08(config)#copy startup-config tftp

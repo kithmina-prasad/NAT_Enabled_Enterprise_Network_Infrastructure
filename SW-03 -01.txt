@@ -1,0 +1,77 @@
+Switch>enable
+Switch#configure terminal
+Switch(config)#hostname SW-03-01
+
+SW-03-01(config)#vlan 2
+SW-03-01(config-vlan)#name CCNA
+SW-03-01(config-vlan)#exit
+
+SW-03-01(config)#vlan 3
+SW-03-01(config-vlan)#name CCNP
+SW-03-01(config-vlan)#exit
+
+SW-03-01(config)#vlan 4
+SW-03-01(config-vlan)#name CCIE
+SW-03-01(config-vlan)#exit
+
+SW-03-01(config)#interface range FastEthernet0/1-5
+SW-03-01(config-if-range)#switchport mode access
+SW-03-01(config-if-range)#switchport access vlan 2
+SW-03-01(config-if-range)#exit
+
+SW-03-01(config)#interface range FastEthernet0/6-10
+SW-03-01(config-if-range)#switchport mode access
+SW-03-01(config-if-range)#switchport access vlan 3
+SW-03-01(config-if-range)#exit
+
+SW-03-01(config)#interface range FastEthernet0/11-15
+SW-03-01(config-if-range)#switchport mode access
+SW-03-01(config-if-range)#switchport access vlan 4
+SW-03-01(config-if-range)#exit
+
+SW-03-01(config)#interface range FastEthernet0/21-22
+SW-03-01(config-if-range)#channel-group 1 mode active
+SW-03-01(config-if-range)#switchport mode trunk
+SW-03-01(config-if-range)#speed auto
+SW-03-01(config-if-range)#duplex auto
+SW-03-01(config-if-range)#exit
+
+SW-03-01(config)#interface range FastEthernet0/23-24
+SW-03-01(config-if-range)#channel-group 2 mode active
+SW-03-01(config-if-range)#switchport mode trunk
+SW-03-01(config-if-range)#speed auto
+SW-03-01(config-if-range)#duplex auto
+SW-03-01(config-if-range)#exit
+
+SW-03-01(config)#interface FastEthernet0/1
+SW-03-01(config-if)#switchport mode access
+SW-03-01(config-if)#switchport port-security
+SW-03-01(config-if)#switchport port-security violation restrict	
+SW-03-01(config-if)#switchport port-security mac-address 0001.c720.d619
+SW-03-01(config-if)#exit
+
+SW-03-01(config)#interface FastEthernet0/6
+SW-03-01(config-if)#switchport mode access
+SW-03-01(config-if)#switchport port-security
+SW-03-01(config-if)#switchport port-security violation restrict
+SW-03-01(config-if)#switchport port-security mac-address 0005.5e74.d4e7
+SW-03-01(config-if)#exit
+
+SW-03-01(config)#interface FastEthernet0/11
+SW-03-01(config-if)#switchport mode access
+SW-03-01(config-if)#switchport port-security
+SW-03-01(config-if)#switchport port-security violation restrict
+SW-03-01(config-if)#switchport port-security mac-address 000c.8571.0e49
+SW-03-01(config-if)#exit
+
+SW-03-01(config)#interface range FastEthernet0/2-5
+SW-03-01(config-if-range)#shutdown
+SW-03-01(config-if-range)#exit
+
+SW-03-01(config)#interface range FastEthernet0/7-10
+SW-03-01(config-if-range)#shutdown
+SW-03-01(config-if-range)#exit
+
+SW-03-01(config)#interface range FastEthernet0/12-20
+SW-03-01(config-if-range)#shutdown
+SW-03-01(config-if-range)#exit
